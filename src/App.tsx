@@ -7,6 +7,8 @@ import Catalog from './routes/ClientHome/Catalog';
 import Cart from './routes/ClientHome/Cart';
 import { ContextCartCount } from './utils/context-cart';
 import Login from './routes/ClientHome/Login';
+import Admin from './routes/Admin';
+import AdminHome from './routes/Admin/AdminHome';
 
 function App() {
 
@@ -22,6 +24,9 @@ function App() {
             <Route path='product-details/:productId' element={<ProductDetails />} />
             <Route path='cart' element={<Cart />} />
             <Route path='login' element={<Login />} />
+          </Route>
+          <Route path='/admin/' element={<Admin />}>
+            <Route index element={<AdminHome />} />
           </Route>
           <Route path='*' element={<Navigate to={"/"} />} />
         </Routes>
