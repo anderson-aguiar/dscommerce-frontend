@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import './styles.css';
 import * as cartService from '../../../services/cart-service';
 import * as orderService from '../../../services/order-service';
+import * as authService from '../../../services/auth-service';
 import { OrderDTO } from '../../../models/order';
 import { Link, useNavigate } from 'react-router-dom';
 import { ContextCartCount } from '../../../utils/context-cart';
@@ -27,19 +28,22 @@ export default function Cart() {
         cartService.decreaseItem(productId);
         updateCart();
     }
-    
-    function updateCart(){
+
+    function updateCart() {
         const newCart = cartService.getCart();
         setCart(newCart);
         setContextCartCount(newCart.items.length);
     }
-    function handlePlaceOrderClick(){
-        orderService.placeOrderRequest(cart)
-        .then(response => {
-            cartService.clearCart();
-            setContextCartCount(0);
-            navigate(`/confirmation/${response.data.id}`)            
-        })
+    function handlePlaceOrderClick() {
+        authService.isAuthenticated()
+            ?
+            orderService.placeOrderRequest(cart)
+                .then(response => {
+                    cartService.clearCart();
+                    setContextCartCount(0);
+                    navigate(`/confirmation/${response.data.id}`)
+                })
+            : navigate("/login")
     }
     return (
         <main>
