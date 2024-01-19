@@ -4,6 +4,8 @@ import deleteIcon from '../../../assets/delete.svg';
 import { useEffect, useState } from 'react';
 import * as productService from '../../../services/product-service';
 import { ProductDTO } from '../../../models/product';
+import SearchaBar from '../../../components/SearchBar';
+import ButtonNextPage from '../../../components/ButtonNextPage';
 
 type QueryParams = {
     page: number;
@@ -27,6 +29,14 @@ export default function ProductListing() {
             })
     }, [queryParams]);
 
+    function handleSearch(searchText: string) {
+        setProducts([]);
+        setQueryParam({ ...queryParams, page: 0, name: searchText });
+    }
+    function handleNextPageClick() {
+        setQueryParam({ ...queryParams, page: queryParams.page + 1 })
+    }
+
     return (
         <main>
             <section id="product-listing-section" className="dsc-container">
@@ -35,11 +45,7 @@ export default function ProductListing() {
                 <div className="dsc-btn-page-container dsc-mb20">
                     <div className="dsc-btn dsc-btn-white">Início</div>
                 </div>
-                <form className="dsc-search-bar">
-                    <button type="submit">🔎︎</button>
-                    <input type="text" placeholder="Nome do produtos" />
-                    <button type="reset">🗙</button>
-                </form>
+                <SearchaBar onSearch={handleSearch} />
                 <table className="dsc-table dsc-mb20 dsc-mt20">
                     <thead>
                         <th className="dsc-tb576">ID</th>
@@ -52,7 +58,7 @@ export default function ProductListing() {
                     <tbody>
                         {
                             products.map(product => (
-                                <tr>
+                                <tr key={product.id}>
                                     <td className="dsc-tb576">{product.id}</td>
                                     <td>
                                         <img
@@ -83,7 +89,12 @@ export default function ProductListing() {
 
                     </tbody>
                 </table>
-                <div className="dsc-btn-next-page">Carregar mais</div>
+                {
+                    !isLastPage &&
+                    <div onClick={handleNextPageClick}>
+                        <ButtonNextPage onNextPage={handleNextPageClick} text='Comprar mais' />
+                    </div>
+                }
             </section>
         </main>
     );
