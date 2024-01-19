@@ -1,0 +1,16 @@
+#product-listing-section {
+    padding: 20px 0;
+}
+
+.dsc-product-listing-image {
+    width: 69px;
+    height: 69px;
+    display: block;
+}
+
+.dsc-product-listing-btn {
+    width: auto;
+    height: 20px;
+    cursor: pointer;
+    margin: 5px;
+}

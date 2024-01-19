@@ -15,6 +15,7 @@ export default function HeaderAdmin() {
                     </Link>
                     <div className="dsc-navbar-right">
                         <div className="dsc-menu-items-container">
+                            {/*(isActive) => Ativa o negrito quando a página estiver selecionada*/}
                             <NavLink to={"/admin/home"} className={({ isActive }) => isActive ? 'dsc-menu-item-active' : ""}>
                                 <div className="dsc-menu-item">
                                     <img src={homeIcon} alt="Início" />
