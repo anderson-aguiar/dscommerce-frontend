@@ -25,6 +25,10 @@ export default function ProductForm() {
       name: "price",
       type: "number",
       placeholder: "Preço",
+      validation: function(value: any){
+        return Number(value) > 0;
+      },
+      message: "Favor informar um valor positivo"
     },
     imgUrl: {
       value: "",
@@ -36,6 +40,7 @@ export default function ProductForm() {
   })
 
   useEffect(()=>{
+
     if (isEditing) {
       productservice.findById(Number(params.productId))
       .then(response => {
