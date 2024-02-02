@@ -243,10 +243,10 @@ nav a {
 .dsc-form-control::placeholder {
   color: var(--dsc-color-font-placeholder);
 }
-.dsc-form-control[data-invalid="true"]{
+.dsc-form-control[data-invalid="true"][data-dirty="true"]{
   border: 1px solid var(--dsc-color-error);
 }
-.dsc-form-control[data-invalid="true"] ~ div {
+.dsc-form-control[data-invalid="true"][data-dirty="true"] ~ div {
   display: unset;
 }
 .dsc-form-error {
