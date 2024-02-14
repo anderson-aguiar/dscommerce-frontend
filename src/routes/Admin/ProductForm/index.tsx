@@ -5,13 +5,17 @@ import { Link, useParams } from "react-router-dom";
 import FormInput from '../../../components/FormInput';
 import * as forms from '../../../utils/forms';
 import * as productservice from '../../../services/product-service';
+import * as categoryService from '../../../services/category-service';
 import FormTextArea from '../../../components/FormTextArea';
+import { CategoryDTO } from '../../../models/category';
+import FormSelect from '../../../components/FormSelect';
 
 export default function ProductForm() {
 
   const params = useParams();
   const isEditing = params.productId !== 'create';
 
+  const [categories, setCategories] = useState<CategoryDTO[]>([]);
   const [formData, setFormData] = useState<any>({
     name: {
       value: "",
@@ -19,7 +23,7 @@ export default function ProductForm() {
       name: "name",
       type: "text",
       placeholder: "Nome",
-      validation: function(value: string){
+      validation: function (value: string) {
         return value.length >= 3 && value.length <= 80;
       },
       message: "Favor informar um nome de 3 a 80 caracteres"
@@ -30,7 +34,7 @@ export default function ProductForm() {
       name: "price",
       type: "number",
       placeholder: "Preço",
-      validation: function(value: any){
+      validation: function (value: any) {
         return Number(value) > 0;
       },
       message: "Favor informar um valor positivo"
@@ -48,23 +52,39 @@ export default function ProductForm() {
       name: "description",
       type: "text",
       placeholder: "Descrição",
-      validation: function(value: string){
+      validation: function (value: string) {
         return /^.{10,}$/.test(value);
       },
       message: "A descrição deve ter pelo menos 10 caracteres"
+    },
+    categories: {
+      value: [],
+      id: "categories",
+      name: "categories",
+      placeholder: "Categorias",
+      validation: function (value: CategoryDTO[]) {
+        return value.length > 0;
+      },
+      message: "Selecione ao menos 1 categoria"
     }
   })
+  useEffect(() => {
+    categoryService.findAllRequest()
+      .then(response => {
+        setCategories(response.data);
+      });
+  }, [])
 
-  useEffect(()=>{
+  useEffect(() => {
 
     if (isEditing) {
       productservice.findById(Number(params.productId))
-      .then(response => {
-        const newFormData = forms.updateAll(formData, response.data);
-        setFormData(newFormData);
-      })
+        .then(response => {
+          const newFormData = forms.updateAll(formData, response.data);
+          setFormData(newFormData);
+        })
     }
-  },[])
+  }, [])
 
   function handleInputChange(event: any) {
     const value = event.target.value;
@@ -72,7 +92,7 @@ export default function ProductForm() {
     const result = forms.updateAndValidate(formData, name, value);
     setFormData(result);
   }
-  function handleTurnDirty(name: string){
+  function handleTurnDirty(name: string) {
     const newFormData = forms.dirtyAndValidate(formData, name);
     setFormData(newFormData);
   }
@@ -109,6 +129,22 @@ export default function ProductForm() {
                   onChange={handleInputChange}
                   onTurnDirty={handleTurnDirty}
                 />
+              </div>
+              <div>
+                <FormSelect
+                  {...formData.categories}
+                  className="dsc-form-control"
+                  options={categories}
+                  onChange={(obj: any) => {
+                    const newFormData = forms.updateAndValidate(formData, "categories", obj);
+                    setFormData(newFormData);
+                  }}
+                  onTurnDirty={handleTurnDirty}
+                  isMulti
+                  getOptionLabel={(obj: any) => obj.name}
+                  getOptionValue={(obj: any) => String(obj.id)}
+                />
+                <div className='dsc-form-error'>{formData.categories.message}</div>
               </div>
               <div>
                 <FormTextArea
