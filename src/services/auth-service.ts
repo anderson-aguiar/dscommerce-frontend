@@ -45,9 +45,10 @@ export function getAccessTokenPayload(): AccessTokenPayloadDTO | undefined {
   }
 }
 export function isAuthenticated(): boolean {
+  // eslint-disable-next-line prefer-const
   let tokenPayload = getAccessTokenPayload();
   if (tokenPayload && tokenPayload.exp * 1000 > Date.now()) {
-    // multiplica por 1000 para igualer com a precisão do Date.now()
+    // multiplica por 1000 para igualar com a precisão do Date.now()
     return true;
   }
   return false;

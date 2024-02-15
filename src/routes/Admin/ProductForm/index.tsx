@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import './styles.css';
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import FormInput from '../../../components/FormInput';
 import * as forms from '../../../utils/forms';
 import * as productservice from '../../../services/product-service';
@@ -13,7 +13,7 @@ import FormSelect from '../../../components/FormSelect';
 import { selectStyles } from '../../../utils/select';
 
 export default function ProductForm() {
-
+  const navigate = useNavigate();
   const params = useParams();
   const isEditing = params.productId !== 'create';
 
@@ -99,7 +99,7 @@ export default function ProductForm() {
     setFormData(newFormData);
   }
   function handleSubmit(event: any) {
-    
+
     event.preventDefault();
 
     const formDataValidated = forms.dirtyAndValidationAll(formData);
@@ -107,6 +107,20 @@ export default function ProductForm() {
       setFormData(formDataValidated);
       return;
     }
+
+    const requestBody = forms.toValues(formData);
+    if (isEditing) {
+      requestBody.id = params.productId;
+    }
+    const request = isEditing
+      ? productservice.updateRequest(requestBody)
+      : productservice.insertRequest(requestBody);
+
+    request
+      .then(() => {
+        navigate("/admin/products")
+      });
+
   }
 
   return (
